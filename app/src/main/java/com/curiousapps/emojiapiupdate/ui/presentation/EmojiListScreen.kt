@@ -1,5 +1,7 @@
 package com.curiousapps.emojiapiupdate.ui.presentation
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.curiousapps.emojiapiupdate.ui.presentation.component.EmojiRow
@@ -23,6 +26,7 @@ import com.curiousapps.emojiapiupdate.ui.presentation.component.GradientBackgrou
 fun EmojiListScreen(
   emojiListViewModel: EmojiListViewModel = hiltViewModel()
 ){
+    val context = LocalContext.current
     val state by emojiListViewModel.state.collectAsState(EmojiListViewModel.EmojiListState())
     val emojiList = state.emojiList
     val isLoading = state.isLoading
@@ -53,7 +57,12 @@ fun EmojiListScreen(
          ) {
              val count = emojiList.size
              items(count = count){ index ->
+                 val emoji = emojiList[index].emoji
                  EmojiRow(
+                     modifier = Modifier.clickable {
+                         Toast.makeText(context, "GOT - $emoji",
+                             Toast.LENGTH_SHORT).show()
+                     },
                      emojiItem = emojiList[index]
                  )
              }
