@@ -19,12 +19,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.curiousapps.emojiapiupdate.ui.presentation.component.EmojiDialog
 import com.curiousapps.emojiapiupdate.ui.presentation.component.EmojiRow
 import com.curiousapps.emojiapiupdate.ui.presentation.component.GradientBackground
 
 @Composable
 fun EmojiListScreen(
-  emojiListViewModel: EmojiListViewModel = hiltViewModel()
+  emojiListViewModel: EmojiListViewModel = hiltViewModel(),
+  onSelectEmoji: (hexCode: String) -> Unit
 ){
     val context = LocalContext.current
     val state by emojiListViewModel.state.collectAsState(EmojiListViewModel.EmojiListState())
@@ -58,13 +60,22 @@ fun EmojiListScreen(
              val count = emojiList.size
              items(count = count){ index ->
                  val emoji = emojiList[index].emoji
+                 val hexCode = emojiList[index].hexcode
                  EmojiRow(
                      modifier = Modifier.clickable {
+                         onSelectEmoji(hexCode)
                          Toast.makeText(context, "GOT - $emoji",
                              Toast.LENGTH_SHORT).show()
                      },
                      emojiItem = emojiList[index]
                  )
+
+                 if (selectedEmoji != null){
+                     EmojiDialog(
+                         emojiItem = selectedEmoji,
+                         onDismiss = {emojiListViewModel.onDismissDialog()}
+                     )
+                 }
              }
          }
      }

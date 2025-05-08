@@ -48,6 +48,30 @@ class EmojiListViewModel @Inject constructor(
         }
     }
 
+    fun fetchOneEmoji(hexcode: String){
+        viewModelScope.launch(IO_DISPATCHER) {
+          val result = emojiListRepository.fetchOneEmoji(hexcode = hexcode)
+          when{
+              result.isSuccess ->{
+                  _state.update { it.copy(
+                      selectedEmoji = result.getOrNull()
+                  ) }
+              }
+              result.isFailure ->{
+                  _state.update { it.copy(
+                      selectedEmoji = null
+                  ) }
+              }
+          }
+        }
+    }
+
+    fun onDismissDialog(){
+        _state.update { it.copy(
+            selectedEmoji = null
+        ) }
+    }
+
     data class EmojiListState(
         val emojiList: List<EmojiItem> = emptyList(),
         val isLoading: Boolean = true,
